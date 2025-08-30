@@ -1,0 +1,120 @@
+{
+  "name": "INDONESIA NEWS",
+  "nodes": [
+    {
+      "parameters": {
+        "chatId": "1393779039",
+        "text": "=*{{ $json.title }}*\nSumber: {{ $json.source }} | {{ $json.date }}\n{{ $json.snippet }}\n\nLink : {{ $json.link }}\n",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        384,
+        -176
+      ],
+      "id": "fe1f2a6f-67e2-4944-baa0-5477cdb7e206",
+      "name": "Send a text message",
+      "webhookId": "7a63be0f-ded6-4c8e-93f6-87bc195923bf",
+      "credentials": {
+        "telegramApi": {
+          "id": "1YqVm567eeTyq3gM",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 6
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -288,
+        -176
+      ],
+      "id": "6f1b9ae6-a1ff-4e2a-bb45-157031fa7550",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://serpapi.com/search.json?engine=google&q=demo+rakyat+indonesia+DPR+Agustus+2025&tbm=nws&api_key=bc4fffa98afc16738462a0a85b0f7b7353537c760add20663d062d4497e37e45",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -64,
+        -176
+      ],
+      "id": "8fb0148f-e001-4263-9219-ce58d5a72259",
+      "name": "GET NEWS"
+    },
+    {
+      "parameters": {
+        "jsCode": "const news = items[0].json.news_results || [];\n\nreturn news.map(n => ({\n  json: {\n    title: n.title,\n    link: n.link,\n    snippet: n.snippet,\n    date: n.date,\n    source: n.source\n  }\n}));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        -176
+      ],
+      "id": "1ee75d52-b6e5-4e1a-ad0d-ee3e11a5ac57",
+      "name": "Code"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "GET NEWS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET NEWS": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "af9bd096-9f12-415e-a647-b5abd5122d83",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1ef395c969a07a12d732a84bc189542686fe9d4a4764919a762d9b2bcb909854"
+  },
+  "id": "G8EnlBcqzBfjUin3",
+  "tags": []
+}
